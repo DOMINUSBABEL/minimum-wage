@@ -7,35 +7,38 @@ import WageOptimizer from './components/WageOptimizer';
 import StructuralBase from './components/StructuralBase';
 import DynamicRule from './components/DynamicRule';
 import FiscalWedge from './components/FiscalWedge';
-import { FileText, Github, Share2, CheckCircle } from 'lucide-react';
+import { FileText, Github, Share2, CheckCircle, Menu } from 'lucide-react';
 
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
       {/* Navegación / Cabecera */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                <span className="text-white font-bold text-lg">M</span>
             </div>
             <span className="font-bold text-lg tracking-tight text-slate-900 hidden sm:block">MacroViz</span>
           </div>
           
-          <nav className="hidden md:flex gap-6 text-sm font-medium text-slate-600">
-            <a href="#stats" className="hover:text-blue-600 transition-colors">Datos</a>
-            <a href="#simulation" className="hover:text-blue-600 transition-colors">Simulación</a>
-            <a href="#optimal-model" className="text-blue-600 hover:text-blue-800 transition-colors font-bold">Modelo Óptimo</a>
+          {/* Navegación Central - Scroll horizontal en móviles */}
+          <nav className="flex-1 flex justify-center mx-4 overflow-x-auto no-scrollbar">
+            <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-slate-600 whitespace-nowrap px-2">
+              <a href="#stats" className="hover:text-blue-600 transition-colors py-2">Datos</a>
+              <a href="#simulation" className="hover:text-blue-600 transition-colors py-2">Simulación</a>
+              <a href="#optimal-model" className="text-blue-600 hover:text-blue-800 transition-colors font-bold py-2">Modelo Óptimo</a>
+            </div>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <button className="text-slate-400 hover:text-slate-600 transition-colors">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <button className="text-slate-400 hover:text-slate-600 transition-colors p-1">
               <Share2 className="w-5 h-5" />
             </button>
-            <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors">
+            <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors p-1">
               <Github className="w-5 h-5" />
             </a>
-            <a href="#" className="hidden sm:flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
+            <a href="#" className="hidden md:flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
               <FileText className="w-4 h-4" />
               Ver PDF
             </a>
@@ -46,10 +49,10 @@ const App: React.FC = () => {
       <main>
         <Hero />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-0 pb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-0 pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Columna Izquierda - Contexto de Datos */}
-            <div className="lg:col-span-1 space-y-8" id="stats">
+            <div className="lg:col-span-1 space-y-6 sm:space-y-8" id="stats">
               <StatsComparison />
               
               <div className="bg-blue-600 text-white p-6 rounded-xl shadow-lg">
@@ -65,7 +68,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Columna Derecha - Simulación */}
-            <div className="lg:col-span-2 space-y-8" id="simulation">
+            <div className="lg:col-span-2 space-y-6 sm:space-y-8" id="simulation">
                <ImpulseResponse />
                <div className="bg-slate-100 rounded-xl p-6 border border-slate-200">
                   <h3 className="font-bold text-slate-800 mb-2">Contexto del Modelo</h3>
@@ -79,29 +82,29 @@ const App: React.FC = () => {
           </div>
 
           {/* Sección Optimizador General */}
-          <div className="mt-12">
+          <div className="mt-8 sm:mt-12">
             <WageOptimizer />
           </div>
 
           {/* NUEVO: Modelo de Óptimo Funcionamiento Detallado */}
-          <div id="optimal-model" className="mt-16 pt-8 border-t border-slate-200 scroll-mt-24">
+          <div id="optimal-model" className="mt-12 sm:mt-16 pt-8 border-t border-slate-200 scroll-mt-24">
             <div className="mb-8">
               <span className="text-blue-600 font-bold tracking-wide text-sm uppercase">Nuevo Apartado</span>
-              <h2 className="text-3xl font-bold text-slate-900 mt-2">Modelo de Óptimo Funcionamiento Económico</h2>
-              <p className="text-slate-600 mt-3 max-w-3xl text-lg">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">Modelo de Óptimo Funcionamiento Económico</h2>
+              <p className="text-slate-600 mt-3 max-w-3xl text-base sm:text-lg">
                 Según el documento del Banco de la República, para lograr el "menor salario posible" (en términos de carga marginal) con los mayores rendimientos, el diseño debe estructurarse en tres niveles matemáticos estrictos.
               </p>
             </div>
 
-            <div className="space-y-12">
+            <div className="space-y-8 sm:space-y-12">
               <StructuralBase />
               <DynamicRule />
               <FiscalWedge />
             </div>
 
             {/* Resumen de Beneficios */}
-            <div className="mt-12 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-8 shadow-xl">
-               <h3 className="text-2xl font-bold mb-6">Beneficios Macroeconómicos del Modelo Óptimo</h3>
+            <div className="mt-12 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+               <h3 className="text-xl sm:text-2xl font-bold mb-6">Beneficios Macroeconómicos del Modelo Óptimo</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2 mb-2 font-bold text-emerald-300">
