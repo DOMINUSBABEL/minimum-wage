@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Hero from './components/Hero';
 import StatsComparison from './components/StatsComparison';
 import ImpulseResponse from './components/ImpulseResponse';
@@ -7,11 +7,51 @@ import WageOptimizer from './components/WageOptimizer';
 import StructuralBase from './components/StructuralBase';
 import DynamicRule from './components/DynamicRule';
 import FiscalWedge from './components/FiscalWedge';
-import { FileText, Github, Share2, CheckCircle, Menu } from 'lucide-react';
+import ConceptExplainer from './components/ConceptExplainer';
+import { FileText, Github, Share2, CheckCircle, Copy, ExternalLink } from 'lucide-react';
 
 const App: React.FC = () => {
+  const [showCopied, setShowCopied] = useState(false);
+
+  // Funcionalidad para botón Compartir
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'MacroViz: Salario Mínimo en Colombia',
+          text: 'Visualización interactiva sobre los efectos macroeconómicos del salario mínimo en economías con informalidad.',
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error("Error al compartir:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setShowCopied(true);
+        setTimeout(() => setShowCopied(false), 2000);
+      } catch (err) {
+        console.error("Error al copiar:", err);
+      }
+    }
+  };
+
+  // Funcionalidad para ir al Paper
+  const handlePDF = () => {
+    // Enlace al repositorio de Borradores de Economía del BanRep (Genérico o específico si existiera DOI público directo)
+    window.open('https://www.banrep.gov.co/es/publicaciones-investigaciones/borradores-economia', '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      {/* Notificación Toast para Copiado */}
+      {showCopied && (
+        <div className="fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2 text-sm">
+          <CheckCircle className="w-4 h-4 text-emerald-400" />
+          Enlace copiado al portapapeles
+        </div>
+      )}
+
       {/* Navegación / Cabecera */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -27,21 +67,36 @@ const App: React.FC = () => {
             <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-slate-600 whitespace-nowrap px-2">
               <a href="#stats" className="hover:text-blue-600 transition-colors py-2">Datos</a>
               <a href="#simulation" className="hover:text-blue-600 transition-colors py-2">Simulación</a>
-              <a href="#optimal-model" className="text-blue-600 hover:text-blue-800 transition-colors font-bold py-2">Modelo Óptimo</a>
+              <a href="#optimal-model" className="hover:text-blue-600 transition-colors py-2">Modelo Óptimo</a>
+              <a href="#concepts" className="text-blue-600 hover:text-blue-800 transition-colors font-bold py-2">Glosario</a>
             </div>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <button className="text-slate-400 hover:text-slate-600 transition-colors p-1">
-              <Share2 className="w-5 h-5" />
+            <button 
+              onClick={handleShare}
+              className="text-slate-400 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-slate-50"
+              title="Compartir"
+            >
+              {showCopied ? <CheckCircle className="w-5 h-5 text-emerald-500" /> : <Share2 className="w-5 h-5" />}
             </button>
-            <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors p-1">
+            <a 
+              href="https://github.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-slate-400 hover:text-slate-900 transition-colors p-2 rounded-full hover:bg-slate-50"
+              title="Ver Código"
+            >
               <Github className="w-5 h-5" />
             </a>
-            <a href="#" className="hidden md:flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
+            <button 
+              onClick={handlePDF}
+              className="hidden md:flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors shadow-sm"
+            >
               <FileText className="w-4 h-4" />
-              Ver PDF
-            </a>
+              Ver Paper
+              <ExternalLink className="w-3 h-3 opacity-50 ml-1" />
+            </button>
           </div>
         </div>
       </header>
@@ -144,6 +199,11 @@ const App: React.FC = () => {
                   </div>
                </div>
             </div>
+          </div>
+          
+          {/* NUEVO: Glosario de Conceptos */}
+          <div id="concepts" className="mt-16">
+            <ConceptExplainer />
           </div>
 
           <div id="findings">
