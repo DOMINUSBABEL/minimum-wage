@@ -1,0 +1,5 @@
+{
+  "name": "MacroEcon Salario Min Viz",
+  "description": "Visualización interactiva de los efectos macroeconómicos del salario mínimo en economías emergentes con informalidad laboral, basada en investigación del Banco de la República de Colombia.",
+  "requestFramePermissions": []
+}
