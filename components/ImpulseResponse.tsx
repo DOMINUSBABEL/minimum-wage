@@ -1,11 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { impulseResponseData } from '../data/paperData';
-import { Activity, Cog, Users } from 'lucide-react';
+import { Activity, Cog, Users, Sliders } from 'lucide-react';
+
+const generateRuleData = (wPast: number, wExpected: number, wProd: number, t: number) => {
+  const persistence = 0.2 + wPast * 0.2 - wExpected * 0.1;
+  const amplitude = 1 + wProd * 0.2;
+
+  const gdp = -0.15 * amplitude * Math.exp(-persistence * t) * Math.cos(0.1 * t);
+  const infl = 0.15 * amplitude * Math.exp(-(persistence + 0.3) * t);
+  const cons = -0.1 * amplitude * (1 - Math.exp(-0.1 * t)) + 0.05 * Math.exp(-(persistence + 0.3) * t);
+  const inv = -1.5 * amplitude * Math.exp(-(persistence + 0.2) * t);
+
+  return { GDP: gdp, Inflation: infl, Consumption: cons, Investment: inv };
+};
 
 const ImpulseResponse: React.FC = () => {
   const [activeMetric, setActiveMetric] = useState<'GDP' | 'Inflation' | 'Consumption' | 'Investment'>('GDP');
   const [showScenarios, setShowScenarios] = useState(false);
+  const [showRules, setShowRules] = useState(false);
+  
+  const [customPastInfl, setCustomPastInfl] = useState(0.5);
+  const [customExpInfl, setCustomExpInfl] = useState(0.5);
+  const [customProd, setCustomProd] = useState(0.5);
+
+  const chartData = useMemo(() => {
+    return impulseResponseData.map((baseData) => {
+      const t = baseData.time;
+      return {
+        ...baseData,
+        Rule1: generateRuleData(1, 0, 0, t),
+        Rule2: generateRuleData(0, 1, 0, t),
+        Rule3: generateRuleData(1, 0, 1, t),
+        CustomRule: generateRuleData(customPastInfl, customExpInfl, customProd, t),
+      };
+    });
+  }, [customPastInfl, customExpInfl, customProd]);
 
   const metricLabels: Record<string, string> = {
     'GDP': 'PIB',
@@ -41,7 +71,7 @@ const ImpulseResponse: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
         <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer select-none">
           <input 
             type="checkbox" 
@@ -49,30 +79,62 @@ const ImpulseResponse: React.FC = () => {
             onChange={(e) => setShowScenarios(e.target.checked)}
             className="w-5 h-5 sm:w-4 sm:h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
           />
-          <span className="text-xs sm:text-sm">Comparar Escenarios (Análisis de Sensibilidad)</span>
+          <span className="text-xs sm:text-sm">Comparar Escenarios Estructurales</span>
+        </label>
+        <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer select-none">
+          <input 
+            type="checkbox" 
+            checked={showRules} 
+            onChange={(e) => setShowRules(e.target.checked)}
+            className="w-5 h-5 sm:w-4 sm:h-4 text-purple-600 rounded focus:ring-purple-500 border-gray-300"
+          />
+          <span className="text-xs sm:text-sm">Comparar Reglas de Ajuste Dinámico</span>
         </label>
       </div>
+
+      {showRules && (
+        <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
+          <h4 className="font-semibold text-purple-900 text-sm mb-3 flex items-center gap-2">
+            <Sliders className="w-4 h-4" />
+            Configurar Regla Personalizada (Custom Rule)
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-purple-800 mb-1">Peso Inflación Pasada: {customPastInfl.toFixed(1)}</label>
+              <input type="range" min="0" max="2" step="0.1" value={customPastInfl} onChange={(e) => setCustomPastInfl(Number(e.target.value))} className="w-full accent-purple-600" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-purple-800 mb-1">Peso Inflación Esperada: {customExpInfl.toFixed(1)}</label>
+              <input type="range" min="0" max="2" step="0.1" value={customExpInfl} onChange={(e) => setCustomExpInfl(Number(e.target.value))} className="w-full accent-purple-600" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-purple-800 mb-1">Peso Productividad: {customProd.toFixed(1)}</label>
+              <input type="range" min="0" max="2" step="0.1" value={customProd} onChange={(e) => setCustomProd(Number(e.target.value))} className="w-full accent-purple-600" />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="h-[300px] sm:h-[400px] w-full relative">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={impulseResponseData}
-            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+            data={chartData}
+            margin={{ top: 10, right: 10, left: 20, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis 
               dataKey="time" 
-              label={{ value: 'Trimestres', position: 'insideBottom', offset: -5, fill: '#94a3b8', fontSize: 12 }} 
+              label={{ value: 'Trimestres', position: 'insideBottom', offset: -15, fill: '#94a3b8', fontSize: 12 }} 
               tick={{ fill: '#64748b', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
             />
             <YAxis 
-              label={{ value: '% Desviación', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 12 }}
+              label={{ value: 'Desviaciones con respecto al PIB (%)', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 12, offset: -10 }}
               tick={{ fill: '#64748b', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              width={40}
+              width={60}
             />
             <Tooltip 
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
@@ -112,10 +174,50 @@ const ImpulseResponse: React.FC = () => {
                 />
               </>
             )}
+            
+            {showRules && (
+              <>
+                <Line 
+                  type="monotone" 
+                  dataKey={`Rule1.${activeMetric}`} 
+                  name="Regla 1 (Inflación Pasada)" 
+                  stroke="#f59e0b" 
+                  strokeWidth={2} 
+                  strokeDasharray="3 3"
+                  dot={false} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey={`Rule2.${activeMetric}`} 
+                  name="Regla 2 (Inflación Esperada)" 
+                  stroke="#8b5cf6" 
+                  strokeWidth={2} 
+                  strokeDasharray="3 3"
+                  dot={false} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey={`Rule3.${activeMetric}`} 
+                  name="Regla 3 (Inf. Pasada + Prod.)" 
+                  stroke="#ec4899" 
+                  strokeWidth={2} 
+                  strokeDasharray="3 3"
+                  dot={false} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey={`CustomRule.${activeMetric}`} 
+                  name="Regla Personalizada" 
+                  stroke="#06b6d4" 
+                  strokeWidth={3} 
+                  dot={false} 
+                />
+              </>
+            )}
           </LineChart>
         </ResponsiveContainer>
         
-        {showScenarios && (activeMetric !== 'GDP' && activeMetric !== 'Consumption') && (
+        {showScenarios && (activeMetric !== 'GDP' && activeMetric !== 'Consumption') && !showRules && (
            <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-[1px] rounded-lg border border-dashed border-slate-300 p-4 text-center">
              <p className="text-slate-500 font-medium text-sm">Comparación de escenarios solo disponible para PIB y Consumo</p>
            </div>

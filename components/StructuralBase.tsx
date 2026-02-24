@@ -40,14 +40,14 @@ const StructuralBase: React.FC = () => {
             </label>
             <input 
               type="range" 
-              min="50" 
+              min="0" 
               max="100" 
               value={kaitzTarget} 
               onChange={(e) => setKaitzTarget(Number(e.target.value))}
               className="w-full h-8 bg-transparent cursor-pointer accent-blue-600 touch-none"
             />
             <div className="flex justify-between text-xs text-slate-400 mt-1">
-              <span>55% (OCDE)</span>
+              <span>0%</span>
               <span>90% (COL)</span>
             </div>
           </div>

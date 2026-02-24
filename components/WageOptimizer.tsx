@@ -6,8 +6,8 @@ const WageOptimizer: React.FC = () => {
   const [wageRatio, setWageRatio] = useState(90);
 
   const data = useMemo(() => {
-    return Array.from({ length: 91 }, (_, i) => {
-      const ratio = i + 30; 
+    return Array.from({ length: 121 }, (_, i) => {
+      const ratio = i; 
       const demandScore = 100 * (1 - Math.exp(-0.05 * ratio));
       const costDrag = 0.012 * Math.pow(ratio, 2.1);
       let efficiency = demandScore - costDrag;
@@ -31,7 +31,7 @@ const WageOptimizer: React.FC = () => {
   const getStatus = () => {
     if (Math.abs(wageRatio - optimalPoint.ratio) < 5) return {
       type: 'optimal',
-      title: 'Balance Óptimo',
+      title: 'Balance Menos Lesivo',
       desc: 'Producción formal máxima alcanzada.',
       color: 'text-emerald-600',
       bg: 'bg-emerald-50',
@@ -62,7 +62,15 @@ const WageOptimizer: React.FC = () => {
       <div className="mb-6 border-b border-slate-100 pb-4">
         <div className="flex items-center gap-2 mb-2">
            <TrendingUp className="w-6 h-6 text-blue-600" />
-           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Calculadora de Salario Óptimo</h2>
+           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+             Calculadora de Salario Menos Lesivo
+             <span className="group relative inline-block cursor-help">
+               <span className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 text-slate-600 text-xs font-bold">?</span>
+               <span className="invisible group-hover:visible absolute z-10 w-64 p-2 mt-2 text-xs text-white bg-slate-800 rounded-lg shadow-lg -left-1/2 transform -translate-x-1/2">
+                 Nota: Este valor no es definido explícitamente como "óptimo" en el paper, sino que es una derivación basada en los datos del mismo (específicamente, el punto que maximiza la producción formal).
+               </span>
+             </span>
+           </h2>
         </div>
         <p className="text-slate-600 text-sm sm:text-base">
           Encuentra la <strong>Frontera de Eficiencia</strong>: El nivel salarial que maximiza la producción formal.
@@ -78,7 +86,7 @@ const WageOptimizer: React.FC = () => {
             </label>
             <input
               type="range"
-              min="30"
+              min="0"
               max="120"
               step="1"
               value={wageRatio}
@@ -86,7 +94,7 @@ const WageOptimizer: React.FC = () => {
               className="w-full h-8 bg-transparent cursor-pointer accent-blue-600 touch-none"
             />
             <div className="flex justify-between text-xs text-slate-400 mt-1">
-              <span>30%</span>
+              <span>0%</span>
               <span>120%</span>
             </div>
           </div>
@@ -130,12 +138,21 @@ const WageOptimizer: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <XAxis 
                 dataKey="ratio" 
-                label={{ value: 'Ratio Salario Min/Mediana (%)', position: 'insideBottom', offset: -10, fill: '#64748b', fontSize: 12 }}
+                label={{ value: 'Ratio del salario mínimo (Índice de Kaitz)', position: 'insideBottom', offset: -10, fill: '#64748b', fontSize: 12 }}
                 tick={{ fill: '#94a3b8', fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis 
+                yAxisId="left"
+                label={{ value: 'Eficiencia', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 12 }}
+                hide 
+                domain={[0, 100]}
+              />
+              <YAxis 
+                yAxisId="right"
+                orientation="right"
+                label={{ value: 'Informalidad (%)', angle: 90, position: 'insideRight', fill: '#ef4444', fontSize: 12 }}
                 hide 
                 domain={[0, 100]}
               />
@@ -145,9 +162,10 @@ const WageOptimizer: React.FC = () => {
               />
               
               <Area 
+                yAxisId="left"
                 type="monotone" 
                 dataKey="efficiency" 
-                name="Eficiencia"
+                name="Eficiencia (Máxima producción formal)"
                 stroke="#2563eb" 
                 strokeWidth={3}
                 fillOpacity={1} 
@@ -155,6 +173,7 @@ const WageOptimizer: React.FC = () => {
               />
 
               <Area 
+                yAxisId="right"
                 type="monotone" 
                 dataKey="informality" 
                 name="Informalidad"

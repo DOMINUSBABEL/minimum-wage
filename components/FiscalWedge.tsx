@@ -26,7 +26,7 @@ const FiscalWedge: React.FC = () => {
       risk: current.automationRisk
     },
     {
-      name: 'Óptimo',
+      name: 'Menos Lesivo',
       wage: baseWage,
       taxes: optimal.taxes,
       total: optimal.totalCost,

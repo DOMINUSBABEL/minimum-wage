@@ -8,7 +8,7 @@ import StructuralBase from './components/StructuralBase';
 import DynamicRule from './components/DynamicRule';
 import FiscalWedge from './components/FiscalWedge';
 import ConceptExplainer from './components/ConceptExplainer';
-import { FileText, Github, Share2, CheckCircle, Copy, ExternalLink } from 'lucide-react';
+import { FileText, Github, Share2, CheckCircle, Copy, ExternalLink, Briefcase } from 'lucide-react';
 
 const App: React.FC = () => {
   const [showCopied, setShowCopied] = useState(false);
@@ -67,7 +67,7 @@ const App: React.FC = () => {
             <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-slate-600 whitespace-nowrap px-2">
               <a href="#stats" className="hover:text-blue-600 transition-colors py-2">Datos</a>
               <a href="#simulation" className="hover:text-blue-600 transition-colors py-2">Simulación</a>
-              <a href="#optimal-model" className="hover:text-blue-600 transition-colors py-2">Modelo Óptimo</a>
+              <a href="#optimal-model" className="hover:text-blue-600 transition-colors py-2">Modelo Menos Lesivo</a>
               <a href="#concepts" className="text-blue-600 hover:text-blue-800 transition-colors font-bold py-2">Glosario</a>
             </div>
           </nav>
@@ -141,11 +141,11 @@ const App: React.FC = () => {
             <WageOptimizer />
           </div>
 
-          {/* NUEVO: Modelo de Óptimo Funcionamiento Detallado */}
+          {/* NUEVO: Modelo de Menos Lesivo Funcionamiento Detallado */}
           <div id="optimal-model" className="mt-12 sm:mt-16 pt-8 border-t border-slate-200 scroll-mt-24">
             <div className="mb-8">
               <span className="text-blue-600 font-bold tracking-wide text-sm uppercase">Nuevo Apartado</span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">Modelo de Óptimo Funcionamiento Económico</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">Modelo de Funcionamiento Menos Lesivo</h2>
               <p className="text-slate-600 mt-3 max-w-3xl text-base sm:text-lg">
                 Según el documento del Banco de la República, para lograr el "menor salario posible" (en términos de carga marginal) con los mayores rendimientos, el diseño debe estructurarse en tres niveles matemáticos estrictos.
               </p>
@@ -159,7 +159,7 @@ const App: React.FC = () => {
 
             {/* Resumen de Beneficios */}
             <div className="mt-12 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
-               <h3 className="text-xl sm:text-2xl font-bold mb-6">Beneficios Macroeconómicos del Modelo Óptimo</h3>
+               <h3 className="text-xl sm:text-2xl font-bold mb-6">Beneficios Macroeconómicos del Modelo Menos Lesivo</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2 mb-2 font-bold text-emerald-300">
@@ -214,7 +214,7 @@ const App: React.FC = () => {
           <div className="bg-white border border-slate-200 mt-12 rounded-2xl p-8 md:p-12 text-center">
             <h2 className="text-2xl font-bold text-slate-900 mb-4">Conclusión Final</h2>
             <p className="max-w-3xl mx-auto text-lg text-slate-600 mb-6">
-              "Las implicaciones macroeconómicas de los salarios mínimos son significativas. Un diseño óptimo requiere abandonar la discrecionalidad política en favor de reglas técnicas estrictas y una reducción de la carga fiscal sobre la nómina."
+              "Las implicaciones macroeconómicas de los salarios mínimos son significativas. Un diseño menos lesivo requiere abandonar la discrecionalidad política en favor de reglas técnicas estrictas y una reducción de la carga fiscal sobre la nómina."
             </p>
           </div>
         </div>
@@ -222,11 +222,22 @@ const App: React.FC = () => {
 
       <footer className="bg-white border-t border-slate-200 py-12 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-500 text-sm mb-6">
             Basado en el artículo <strong>"Macroeconomic Effects of the Minimum Wage in an Emerging Economy with Labor Informality"</strong> (2024).
           </p>
-          <p className="text-slate-400 text-xs mt-2">
-            Visualización creada con fines educativos.
+          
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-50 rounded-full border border-slate-100 hover:border-slate-200 transition-colors">
+             <div className="p-1.5 bg-slate-200 rounded-full text-slate-500">
+                <Briefcase className="w-4 h-4" />
+             </div>
+             <div className="text-left">
+                <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400 leading-none mb-1">Realizado por</p>
+                <p className="text-slate-900 font-bold text-sm leading-none">Consultora Talleyrand</p>
+             </div>
+          </div>
+          
+          <p className="text-slate-300 text-xs mt-6">
+            Visualización creada con fines educativos y de análisis estratégico.
           </p>
         </div>
       </footer>
